@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # MongoDB Replica Set - 3 nós para demonstrar replicação
+  mongo1:
+    image: mongo:7.0
+    container_name: mongo1
+    hostname: mongo1
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo1_data:/data/db
+      - ./scripts/init-replica.js:/docker-entrypoint-initdb.d/init-replica.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: ecommerce_catalog
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - mongo_network
+    restart: unless-stopped
+
+  mongo2:
+    image: mongo:7.0
+    container_name: mongo2
+    hostname: mongo2
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo2_data:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - mongo_network
+    restart: unless-stopped
+
+  mongo3:
+    image: mongo:7.0
+    container_name: mongo3
+    hostname: mongo3
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo3_data:/data/db
+    command: mongod --replSet rs0 --bind_ip_all
+    networks:
+      - mongo_network
+    restart: unless-stopped
+
+  # Serviço de inicialização do Replica Set
+  mongo-init:
+    image: mongo:7.0
+    container_name: mongo-init
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    networks:
+      - mongo_network
+    entrypoint: >
+      bash -c "
+        sleep 10 &&
+        mongosh --host mongo1:27017 --eval '
+          rs.initiate({
+            _id: \"rs0\",
+            members: [
+              { _id: 0, host: \"mongo1:27017\", priority: 2 },
+              { _id: 1, host: \"mongo2:27017\", priority: 1 },
+              { _id: 2, host: \"mongo3:27017\", priority: 1 }
+            ]
+          })
+        ' &&
+        echo \"Replica Set iniciado com sucesso!\"
+      "
+    restart: "no"
+
+  # Mongo Express - Interface web para visualizar dados
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo1
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    depends_on:
+      - mongo1
+    networks:
+      - mongo_network
+    restart: unless-stopped
+
+networks:
+  mongo_network:
+    driver: bridge
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+  mongo3_data:
