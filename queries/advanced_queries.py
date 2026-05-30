@@ -76,14 +76,14 @@ def query1_faceted_search():
     ]
     result = list(db.products.aggregate(pipeline))[0]
     stats = result['price_stats'][0]
-    print(f"\n📊 Total: {stats['total_results']:,} produtos")
+    print(f"\n Total: {stats['total_results']:,} produtos")
     print(f"   Preço mínimo: Kz {stats['min_price']:,.0f}")
     print(f"   Preço máximo: Kz {stats['max_price']:,.0f}")
     print(f"   Preço médio:  Kz {stats['avg_price']:,.0f}")
-    print("\n📂 Por Subcategoria:")
+    print("\n Por Subcategoria:")
     print(tabulate([[r["_id"], r["count"]] for r in result["subcategory_counts"]],
                    headers=["Subcategoria", "Produtos"], tablefmt="simple"))
-    print("\n📦 Top 5 Produtos:")
+    print("\n Top 5 Produtos:")
     print(tabulate([[p["product_id"], p["name"][:35], p["brand"],
                      f"Kz {p['price']:,.0f}", p["ratings_summary"]["average"]]
                     for p in result["products"][:5]],
@@ -155,7 +155,7 @@ def query4_complex_update():
         {"product_id":1, "name":1, "price":1}
     )
     if not product:
-        print("❌ Produto não encontrado"); return None
+        print(" Produto não encontrado"); return None
     product_id = product["product_id"]
     old_price   = product["price"]
     new_price   = round(old_price * 0.80, 2)
@@ -173,7 +173,7 @@ def query4_complex_update():
     )
     updated = db.products.find_one({"product_id": product_id},
         {"_id":0,"price":1,"tags":1,"discount_percentage":1,"price_history":{"$slice":-2}})
-    print(f"\n✅ Modificado: {result.modified_count} documento")
+    print(f"\n Modificado: {result.modified_count} documento")
     print(f"   Tags: {updated.get('tags', [])}")
     print(f"   Últimas entradas do price_history:")
     for ph in updated.get("price_history", []):
@@ -255,7 +255,7 @@ def query6_price_trends():
         {"$limit": 20}
     ]
     results = list(db.products.aggregate(pipeline))
-    print("\n📈 Evolução de Preços — Eletrónicos (6 meses) em AOA:")
+    print("\n Evolução de Preços — Eletrónicos (6 meses) em AOA:")
     print(tabulate([[r["period"], r["subcategory"][:14],
                      f"Kz {r['avg_price']:,.0f}", f"Kz {r['min_price']:,.0f}",
                      f"Kz {r['max_price']:,.0f}", r["changes"]]
@@ -311,7 +311,7 @@ def query7_trending_products():
         }}
     ]
     results = list(db.reviews.aggregate(pipeline, allowDiskUse=True))
-    print("\n🔥 Produtos em Tendência:")
+    print("\n Produtos em Tendência:")
     print(tabulate([[r["product_id"], r["name"][:28], r["brand"],
                      f"Kz {r['price']:,.0f}", r["global_rating"],
                      r["reviews"], r["trending_score"]]
@@ -329,15 +329,15 @@ def main():
     print("=" * 70)
     try:
         client.admin.command('ping')
-        print("✅ Conectado ao MongoDB!")
+        print(" Conectado ao MongoDB!")
     except Exception as e:
-        print(f"❌ Erro: {e}")
-        print("💡 Inicie o ambiente: docker-compose up -d")
+        print(f" Erro: {e}")
+        print(" Inicie o ambiente: docker-compose up -d")
         return
     count = db.products.estimated_document_count()
     if count == 0:
-        print("⚠️  Base de dados vazia! Execute: python scripts/seed_data.py"); return
-    print(f"\n📦 Total de produtos: {count:,}")
+        print("  Base de dados vazia! Execute: python scripts/seed_data.py"); return
+    print(f"\n Total de produtos: {count:,}")
 
     queries = [
         ("Q1 — Pesquisa Facetada (Filtros + Ordenação)", query1_faceted_search),
@@ -355,7 +355,7 @@ def main():
             _, elapsed = run_query(name, fn)
             timing.append((name[:55], f"{elapsed:.2f} ms"))
         except Exception as e:
-            print(f"❌ Erro: {e}")
+            print(f" Erro: {e}")
             timing.append((name[:55], "ERRO"))
 
     print(f"\n{'='*70}")
@@ -363,7 +363,7 @@ def main():
     print(f"{'='*70}")
     print(tabulate(timing, headers=["Query", "Tempo"], tablefmt="grid"))
     client.close()
-    print("\n✅ Todas as queries executadas com sucesso!")
+    print("\n Todas as queries executadas com sucesso!")
 
 if __name__ == "__main__":
     main()
