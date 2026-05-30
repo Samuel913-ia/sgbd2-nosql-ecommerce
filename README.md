@@ -1,4 +1,4 @@
-# 🛒 Catálogo de Produtos E-commerce — NoSQL com MongoDB
+#  Catálogo de Produtos E-commerce — NoSQL com MongoDB
 ## Trabalho Prático SGBD II — 2025/2026
 
 **Subdomínio:** Catálogo de Produtos Dinâmico  
@@ -7,18 +7,18 @@
 
 ---
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 | Ferramenta | Versão Mínima | Download |
 |---|---|---|
 | Docker Desktop | 24.x | https://www.docker.com/products/docker-desktop |
 | Python | 3.9+ | https://www.python.org/downloads/ |
 
-> ⚠️ **Windows:** Durante a instalação do Python marcar obrigatoriamente **"Add Python to PATH"**
+>  **Windows:** Durante a instalação do Python marcar obrigatoriamente **"Add Python to PATH"**
 
 ---
 
-## 🚀 Instalação e Execução (Passo a Passo)
+## Instalação e Execução (Passo a Passo)
 
 ### 1. Clonar o repositório
 ```bash
@@ -68,7 +68,7 @@ IP_MONGO3 mongo3
 py scripts/seed_data.py        # Windows
 python3 scripts/seed_data.py   # Mac/Linux
 ```
-⏱ Tempo estimado: 5–10 minutos
+Tempo estimado: 5–10 minutos
 
 ### 8. Executar as 7 consultas avançadas
 ```bash
@@ -82,7 +82,7 @@ Utilizador: `admin` | Password: `admin123`
 
 ---
 
-## 🗂 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 sgbd2-nosql-ecommerce/
@@ -98,7 +98,7 @@ sgbd2-nosql-ecommerce/
 
 ---
 
-## 📊 Resumo das Consultas
+##  Resumo das Consultas
 
 | Query | Descrição | Tempo Real |
 |---|---|---|
@@ -112,7 +112,7 @@ sgbd2-nosql-ecommerce/
 
 ---
 
-## ⏹ Parar o ambiente
+## Parar o ambiente
 ```bash
 docker-compose down
 ```
@@ -120,5 +120,3 @@ docker-compose down
 
 ---
 
-## 📧 Contacto
-Submetido para: teoriepratique@gmail.com
